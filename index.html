@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gare de Bruxelles-Central</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #0d1117; color: #c9d1d9; padding: 20px 10px; text-align: center; }
+        .app-container { max-width: 460px; margin: 0 auto; background: #161b22; border-radius: 12px; border: 1px solid #30363d; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #ffffff; margin-bottom: 5px; }
+        .sub-heading { font-size: 0.75rem; color: #58a6ff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+        .lang-selectors { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .lang-btn { background: transparent; border: 1px solid #30363d; color: #8b949e; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+        .lang-btn.active { border-color: #58a6ff; color: #58a6ff; font-weight: bold; }
+        .hidden { display: none !important; }
+        
+        /* Rail Departure Layout Elements */
+        .schedule-row { background: #0d1117; border: 1px solid #21262d; border-radius: 6px; padding: 12px; margin-bottom: 10px; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .schedule-row:hover { border-color: #58a6ff; }
+        .priority-tag { background: rgba(88, 166, 255, 0.15); color: #58a6ff; font-size: 0.65rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; margin-left: 5px; text-transform: uppercase; }
+        
+        /* Support Messaging Console Styles */
+        .chat-module { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; margin-top: 25px; padding: 15px; text-align: left; }
+        .chat-stream { height: 120px; overflow-y: auto; font-size: 0.85rem; border-bottom: 1px solid #21262d; padding-bottom: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .message { padding: 8px 12px; border-radius: 6px; max-width: 85%; line-height: 1.4; }
+        .msg-sys { background: #161b22; color: #8b949e; border: 1px solid #21262d; }
+        .msg-user { background: #238636; color: #fff; align-self: flex-end; }
+        .chat-controls { display: flex; gap: 8px; }
+        
+        .input-text { width: 100%; padding: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #fff; font-family: 'Montserrat', sans-serif; box-sizing: border-box; font-size: 0.85rem; }
+        .btn-submit { background: #58a6ff; color: #0d1117; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; width: 100%; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="lang-selectors">
+            <button class="lang-btn active" onclick="applyLanguage('en')">EN</button>
+            <button class="lang-btn" onclick="applyLanguage('fr')">FR</button>
+            <button class="lang-btn" onclick="applyLanguage('de')">DE</button>
+        </div>
+
+        <h1 id="lbl-title">Brussels Central</h1>
+        <div class="sub-heading" id="lbl-subtitle">International Departures</div>
+        <hr style="border-color: #30363d; margin-bottom: 20px;">
+
+        <div id="panel-board">
+            <div class="schedule-row" onclick="selectRoute('Berlin Hauptbahnhof (DE)', 190)">
+                <div><span style="color:#fff; font-weight:600;">Berlin Hbf</span><span class="priority-tag">Priority</span><div style="font-size:0.75rem; color:#8b949e; margin-top:2px;">Direct Express - Line 1</div></div>
+                <div style="color:#58a6ff; font-weight:600;">€190</div>
+            </div>
+            <div class="schedule-row" onclick="selectRoute('München Hauptbahnhof (DE)', 225)">
+                <div><span style="color:#fff; font-weight:600;">München Hbf</span><span class="priority-tag">Priority</span><div style="font-size:0.75rem; color:#8b949e; margin-top:2px;">Direct Express - Line 4</div></div>
+                <div style="color:#58a6ff; font-weight:600;">€225</div>
+            </div>
+            <div class="schedule-row" onclick="selectRoute('Frankfurt am Main Hbf (DE)', 150)">
+                <div><span style="color:#fff; font-weight:600;">Frankfurt Hbf</span><span class="priority-tag">Priority</span><div style="font-size:0.75rem; color:#8b949e; margin-top:2px;">InterCity Transit - Line 2</div></div>
+                <div style="color:#58a6ff; font-weight:600;">€150</div>
+            </div>
+            <div class="schedule-row" onclick="selectRoute('Paris Gare du Nord (FR)', 115)">
+                <div><span style="color:#fff; font-weight:600;">Paris Gare du Nord</span><div style="font-size:0.75rem; color:#8b949e; margin-top:2px;">Thalys HighSpeed Link</div></div>
+                <div style="color:#58a6ff; font-weight:600;">€115</div>
+            </div>
+        </div>
+
+        <div id="panel-checkout" class="hidden">
+            <h3 id="lbl-target-route" style="color:#fff; text-align:left; margin:0 0 15px 0;">Destination</h3>
+            <p id="lbl-warn" style="font-size:0.8rem; color:#8b949e; text-align:left; line-height:1.4;">Advanced scheduling required. Tickets must be finalized 3 days prior to departure vectors.</p>
+            
+            <input type="date" id="date-picker" class="input-text" style="margin-top:10px;">
+            <button class="btn-submit" id="btn-lock" onclick="dispatchItinerary()">Confirm Route Selection</button>
+            <p style="font-size:0.8rem; color:#58a6ff; cursor:pointer; margin-top:12px; text-decoration:underline;" onclick="cancelCheckout()" id="lbl-back">Return to main board</p>
+        </div>
+
+        <div id="panel-success" class="hidden">
+            <h3 style="color:#fff; margin-bottom:5px;" id="lbl-success-title">Route Logged</h3>
+            <p style="font-size:0.85rem; color:#8b949e; line-height:1.5;" id="lbl-success-desc">Your itinerary configuration data has been appended to the secure database system records.</p>
+            <button class="btn-submit" onclick="resetBoard()">Ok</button>
+        </div>
+
+        <div class="chat-module">
+            <div style="font-size:0.75rem; font-weight:600; text-transform:uppercase; color:#58a6ff; margin-bottom:8px; letter-spacing:1px;" id="lbl-chat-header">Terminal Support Desk</div>
+            <div class="chat-stream" id="chat-box">
+                <div class="message msg-sys" id="lbl-chat-welcome">Welcome to the central information office. State your travel confirmation inquiries below.</div>
+            </div>
+            <div class="chat-controls">
+                <input type="text" id="chat-msg-input" class="input-text" placeholder="Type message line...">
+                <button style="background:#21262d; border:1px solid #30363d; color:#fff; border-radius:6px; padding:0 12px; cursor:pointer;" onclick="dispatchChatMessage()">➔</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const regionalTranslations = {
+            en: {
+                title: "Brussels Central", subtitle: "International Departures", warn: "Advanced scheduling required. Tickets must be finalized 3 days prior to departure vectors.",
+                lock: "Confirm Route Selection", back: "Return to main board", stitle: "Route Logged", sdesc: "Your itinerary configuration data has been appended to the secure database system records.",
+                cheader: "Terminal Support Desk", cwelcome: "Welcome to the central information office. State your travel confirmation inquiries below."
+            },
+            fr: {
+                title: "Bruxelles-Central", subtitle: "Départs Internationaux", warn: "Planification obligatoire. Les billets doivent être validés 3 jours avant le départ.",
+                lock: "Confirmer l'Itinéraire", back: "Retour au tableau principal", stitle: "Route Enregistrée", sdesc: "Les données de configuration de votre trajet ont été ajoutées aux registres de la base de données.",
+                cheader: "Bureau d'Assistance", cwelcome: "Bienvenue au bureau d'information central. Posez vos questions relatives aux trajets ci-dessous."
+            },
+            de: {
+                title: "Brüssel Hauptbahnhof", subtitle: "Internationale Abfahrten", warn: "Erweiterte Buchung erforderlich. Tickets müssen mindestens 3 Tage vor Abfahrt validiert werden.",
+                lock: "Routenwahl Bestätigen", back: "Zurück zur Hauptübersicht", stitle: "Route Protokolliert", sdesc: "Ihre Reiseroutendaten wurden erfolgreich im sicheren Datenbanksystem vermerkt.",
+                cheader: "Terminal Hilfsprogramm", cwelcome: "Willkommen im zentralen Informationsbüro. Geben Sie Ihre Reiseanfragen unten ein."
+            }
+        };
+
+        let selectedDest = '';
+        let selectedPrice = 0;
+
+        function applyLanguage(lang) {
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('lbl-title').innerText = regionalTranslations[lang].title;
+            document.getElementById('lbl-subtitle').innerText = regionalTranslations[lang].subtitle;
+            document.getElementById('lbl-warn').innerText = regionalTranslations[lang].warn;
+            document.getElementById('btn-lock').innerText = regionalTranslations[lang].lock;
+            document.getElementById('lbl-back').innerText = regionalTranslations[lang].back;
+            document.getElementById('lbl-success-title').innerText = regionalTranslations[lang].stitle;
+            document.getElementById('lbl-success-desc').innerText = regionalTranslations[lang].sdesc;
+            document.getElementById('lbl-chat-header').innerText = regionalTranslations[lang].cheader;
+            document.getElementById('lbl-chat-welcome').innerText = regionalTranslations[lang].cwelcome;
+        }
+
+        function selectRoute(route, price) {
+            selectedDest = route;
+            selectedPrice = price;
+            document.getElementById('lbl-target-route').innerText = `${route} — €${price}`;
+            
+            // Apply 3-day advanced minimum baseline validation rule to date element variables
+            const inputDate = document.getElementById('date-picker');
+            const targetMinDate = new Date();
+            targetMinDate.setDate(targetMinDate.getDate() + 3);
+            const boundaryString = targetMinDate.toISOString().split('T')[0];
+            
+            inputDate.min = boundaryString;
+            inputDate.value = boundaryString;
+
+            document.getElementById('panel-board').classList.add('hidden');
+            document.getElementById('panel-checkout').classList.remove('hidden');
+        }
+
+        function cancelCheckout() {
+            document.getElementById('panel-checkout').classList.add('hidden');
+            document.getElementById('panel-board').classList.remove('hidden');
+        }
+
+        async function dispatchItinerary() {
+            const dateVal = document.getElementById('date-picker').value;
+            if(!dateVal) return;
+
+            const response = await fetch('/api/schedule-itinerary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ destination: selectedDest, price: selectedPrice, date: dateVal })
+            });
+
+            const resData = await response.json();
+            if(resData.status === 'success') {
+                document.getElementById('panel-checkout').classList.add('hidden');
+                document.getElementById('panel-success').classList.remove('hidden');
+            } else {
+                alert(resData.message);
+            }
+        }
+
+        function dispatchChatMessage() {
+            const field = document.getElementById('chat-msg-input');
+            const text = field.value.trim();
+            if(!text) return;
+
+            const box = document.getElementById('chat-box');
+            const userBubble = document.createElement('div');
+            userBubble.className = "message msg-user";
+            userBubble.innerText = text;
+            box.appendChild(userBubble);
+            
+            field.value = "";
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function resetBoard() {
+            document.getElementById('panel-success').classList.add('hidden');
+            document.getElementById('panel-board').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
