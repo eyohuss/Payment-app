@@ -1,0 +1,12 @@
+{
+  "name": "belgischebahn",
+  "version": "1.0.0",
+  "description": "Belgian Railway Payment Application",
+  "private": true,
+  "scripts": {
+    "build": "echo 'No build needed'"
+  },
+  "dependencies": {
+    "@vercel/speed-insights": "^1.0.12"
+  }
+}
