@@ -48,57 +48,90 @@ export default function Page() {
   }
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">Login</CardTitle>
-              <CardDescription>
-                Enter your email below to login to your account
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleLogin}>
-                <div className="flex flex-col gap-6">
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="m@example.com"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                  {error && <p className="text-sm text-red-500">{error}</p>}
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Logging in...' : 'Login'}
-                  </Button>
+    <div className="flex min-h-svh w-full flex-col">
+      {/* Premium Header */}
+      <header className="border-b border-border/50 bg-card/30 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-md flex items-center justify-center text-xs font-bold text-primary-foreground">
+            R
+          </div>
+          <h1 className="text-lg font-light tracking-wide">EuroRail</h1>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex flex-1 items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-light tracking-tight mb-2">Welcome Back</h2>
+            <p className="text-muted-foreground text-sm">Sign in to access your premium rail bookings</p>
+          </div>
+
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+            <div className="p-8">
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-input border-border/50 h-10"
+                  />
                 </div>
-                <div className="mt-4 text-center text-sm">
-                  Don&apos;t have an account?{' '}
-                  <Link
-                    href="/auth/sign-up"
-                    className="underline underline-offset-4"
-                  >
-                    Sign up
-                  </Link>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-input border-border/50 h-10"
+                  />
                 </div>
+
+                {error && (
+                  <div className="p-3 rounded-md bg-destructive/10 border border-destructive/50">
+                    <p className="text-sm text-destructive">{error}</p>
+                  </div>
+                )}
+
+                <Button 
+                  type="submit" 
+                  className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Signing in...' : 'Sign In'}
+                </Button>
+
+                <div className="relative py-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-border/30" />
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="px-2 bg-card text-muted-foreground">New to EuroRail?</span>
+                  </div>
+                </div>
+
+                <Link
+                  href="/auth/sign-up"
+                  className="block w-full py-2.5 px-4 text-center text-sm font-medium rounded-md border border-primary/50 text-primary hover:bg-primary/5 transition"
+                >
+                  Create Account
+                </Link>
               </form>
-            </CardContent>
+            </div>
           </Card>
+
+          <p className="text-xs text-muted-foreground text-center mt-6">
+            By signing in, you agree to our Terms of Service and Privacy Policy
+          </p>
         </div>
       </div>
     </div>
