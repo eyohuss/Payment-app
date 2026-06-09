@@ -2,12 +2,19 @@ import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-15',
-})
+function getStripe() {
+  const apiKey = process.env.STRIPE_SECRET_KEY
+  if (!apiKey) {
+    throw new Error('STRIPE_SECRET_KEY is not set')
+  }
+  return new Stripe(apiKey, {
+    apiVersion: '2024-12-15',
+  })
+}
 
 export async function POST(request: Request) {
   try {
+    const stripe = getStripe()
     const { ticketId, amount, userId } = await request.json()
 
     if (!ticketId || !amount || !userId) {
