@@ -8,6 +8,8 @@ import { ArrowRight, MapPin, Clock, Euro, Train } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
+export const dynamic = 'force-dynamic'
+
 interface Destination {
   id: string
   country: string
